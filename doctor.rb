@@ -29,7 +29,7 @@ module Motion; class Command
     self.description = "This command will audit your development environment and make sure it's in a good state."
 
     def run
-      puts "Comming soon."
+      puts "Coming soon."
     end
   end
 end; end
