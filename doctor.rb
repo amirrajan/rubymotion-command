@@ -29,7 +29,8 @@ module Motion; class Command
     self.description = "This command will audit your development environment and make sure it's in a good state."
 
     def run
-      puts "Coming soon."
+      puts "You are executing this command from the following process working directory: #{`pwd`}"
+      puts "Here are the iOS frameworks that are supported by this RubyMotion installation."
     end
   end
 end; end
