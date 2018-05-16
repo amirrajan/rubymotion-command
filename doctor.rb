@@ -29,7 +29,7 @@ module Motion; class Command
     self.description = "This command will audit your development environment and make sure it's in a good state."
 
     def run
-      puts "Coming soon."
+      puts "Coming soon. Take a look at https://github.com/amirrajan/rubymotion-command/tree/doctor for current progress."
     end
   end
 end; end
