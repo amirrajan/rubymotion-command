@@ -8,7 +8,11 @@ class Wip
   def self.pretty_print *string
     puts "\n======================================================================================\n"
     string.each do |s|
-      puts s
+       if s.is_a? Array
+         send(s[0], s[1])
+       else
+         puts s
+       end
     end
     puts "======================================================================================\n\n"
   end
@@ -58,7 +62,17 @@ class Wip
 
     pretty_print "Android frameworks that are supported by this RubyMotion installation:",
                  `ls -lah /Library/RubyMotion/data/android`
+    
+    pretty_print "You should have at least Java 1.8 installed.",
+                 "This is the version of Java you have installed:",
+                 ['system', 'javac -version']
 
+    pretty_print "You should have Android Studio installed:\n\n",
+                 ['system', 'ls /Applications/Android*']
+    
+    pretty_print "'android-27' should be available:",
+                 ['system', 'ls /Users/*/.rubymotion-android/sdk/platforms'],
+                 "\nIf not, check all API 27 boxes in Android SDK Manager and install."
   end
 end
 
