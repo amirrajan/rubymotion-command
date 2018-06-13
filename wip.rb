@@ -15,8 +15,10 @@ class Wip
 
   def self.rubymotion_to_xcode_version_parities
     {
-      "5.7" => "9.3",
-      "5.8" => "9.2"
+      "5.7"  => "9.2",
+      "5.8"  => "9.3",
+      "5.9"  => "9.4",
+      "5.10" => "9.4",
     }
   end
 
