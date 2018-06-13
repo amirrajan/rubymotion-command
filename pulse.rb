@@ -28,8 +28,8 @@ require 'net/http'
 
 module Motion; class Command
   class Pulse < Command
-    self.summary = "View up-to-the-minute news about RubyMotion without any newsletters or social media nonsense. Straight text."
-    self.description = "The command simply curls http://pulse.rubymotion.com and returns the lastest unread entries."
+    self.summary = "See recent news about RubyMotion."
+    self.description = "View up-to-the-minute news about RubyMotion without any newsletters or social media nonsense. Straight text."
 
     # This file contains an MD5 hash of all pulse entries.
     def read_pulses_file
