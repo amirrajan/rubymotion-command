@@ -25,6 +25,7 @@
 
 require 'digest/sha1'
 require 'net/http'
+require 'date'
 
 module Motion; class Command
   class Pulse < Command
@@ -78,3 +79,38 @@ module Motion; class Command
     end
   end
 end; end
+
+# Don't attempt to auto run the pulse if the `RUBYMOTION_OFFLINE` flag is set.
+if !ENV['RUBYMOTION_OFFLINE']
+  # Attept to get the last time pulse was run
+  last_pulse_path = File.expand_path('~/.rubymotion/rubymotion-command/.last-pulse')
+  does_last_pulse_exist = File.exists?(last_pulse_path)
+
+  begin
+    # If the "last pulse" file is there, get the date out of the file
+    # and determine if pulse should be run.
+    if does_last_pulse_exist
+      last_pulse_date = File.read(last_pulse_path).strip
+      if Date.today.to_s != last_pulse_date
+        pulse = Motion::Command::Pulse.new []
+        pulse.run
+        `touch #{last_pulse_path}`
+        File.open(last_pulse_path, 'w') do |f|
+          f.write(Date.today.to_s)
+        end
+      end
+    else
+      # if the "last pulse" file _doesn't_ exist, then run pulse and
+      # create the file for future use
+      pulse = Motion::Command::Pulse.new []
+      pulse.run
+      `touch #{last_pulse_path}`
+      File.open(last_pulse_path, 'w') do |f|
+        f.write(Date.today.to_s)
+      end
+    end
+  rescue => e
+    puts e
+    puts "WARNING: http://pulse.rubymotion.com doesn't seem to be reachable at this time. Let someone know in the Slack channel or community forum."
+  end
+end
