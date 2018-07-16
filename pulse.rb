@@ -37,6 +37,39 @@ module Motion; class Command
       File.expand_path('~/.rubymotion/rubymotion-command/.read-pulses')
     end
 
+    def write_last_synchronization
+      local_library_directory = File.expand_path('~/Library/RubyMotion/')
+
+      unless File.exist?(local_library_directory)
+        begin
+          FileUtils.mkdir_p local_library_directory
+        rescue
+          puts "WARNING! Unable to create/edit #{local_library_directory}. Run `rm -rf #{local_library_directory}`."
+        end
+      end
+
+      # Attept to get the last time pulse was run
+      last_pulse_path = File.expand_path('~/.rubymotion/rubymotion-command/.last-pulse')
+      last_pulse_path_in_library = File.expand_path("~/Library/RubyMotion/.last-pulse-sync")
+
+      begin
+        # if the "last pulse" file _doesn't_ exist, then run pulse and
+        # create the file for future use
+        `touch #{last_pulse_path}`
+        File.open(last_pulse_path, 'w') do |f|
+          f.write(Date.today.to_s)
+        end
+
+        `touch #{last_pulse_path_in_library}`
+        File.open(last_pulse_path_in_library, 'w') do |f|
+          f.write(Date.today.to_s)
+        end
+      rescue => e
+        puts e
+        puts "WARNING! Pulse failed."
+      end
+    end
+
     def hash_string s
       Digest::SHA1.hexdigest(s.strip)
     end
@@ -73,60 +106,11 @@ module Motion; class Command
           puts ""
         end
       end
+
+      write_last_synchronization
     rescue => e
       puts e
       puts "WARNING! http://pulse.rubymotion.com doesn't seem to be reachable at this time. Let someone know in the Slack channel or community forum."
     end
   end
 end; end
-
-# Don't attempt to auto run the pulse if the `RUBYMOTION_OFFLINE` flag is set.
-if !ENV['RUBYMOTION_OFFLINE']
-  local_library_directory = File.expand_path('~/Library/RubyMotion/')
-
-  unless File.exist?(local_library_directory)
-    begin
-      FileUtils.mkdir_p local_library_directory
-    rescue
-      puts "WARNING! Unable to create/edit #{local_library_directory}. Run `rm -rf #{local_library_directory}`."
-    end
-  end
-
-  # Attept to get the last time pulse was run
-  last_pulse_path = File.expand_path('~/.rubymotion/rubymotion-command/.last-pulse')
-  last_pulse_path_in_library = File.expand_path("~/Library/RubyMotion/.last-pulse-sync")
-  does_last_pulse_exist = File.exists?(last_pulse_path)
-
-  begin
-    # If the "last pulse" file is there, get the date out of the file
-    # and determine if pulse should be run.
-    if does_last_pulse_exist
-      last_pulse_date = File.read(last_pulse_path).strip
-      if Date.today.to_s != last_pulse_date
-        pulse = Motion::Command::Pulse.new []
-        pulse.run
-        `touch #{last_pulse_path}`
-        File.open(last_pulse_path, 'w') do |f|
-          f.write(Date.today.to_s)
-        end
-      end
-    else
-      # if the "last pulse" file _doesn't_ exist, then run pulse and
-      # create the file for future use
-      pulse = Motion::Command::Pulse.new []
-      pulse.run
-      `touch #{last_pulse_path}`
-      File.open(last_pulse_path, 'w') do |f|
-        f.write(Date.today.to_s)
-      end
-
-      `touch #{last_pulse_path_in_library}`
-      File.open(last_pulse_path_in_library, 'w') do |f|
-        f.write(Date.today.to_s)
-      end
-    end
-  rescue => e
-    puts e
-    puts "WARNING! http://pulse.rubymotion.com doesn't seem to be reachable at this time. Let someone know in the Slack channel or community forum."
-  end
-end
