@@ -108,7 +108,7 @@ module Motion; class Command
       latest_version, message = File.read(update_check_file).split('|', 2)
       message ||= ''
       if Util::Version.new(latest_version) > Util::Version.new(product_version)
-        message = "A new version of RubyMotion is available. Run `sudo motion update' to upgrade.\nRun `motion repo` to synchronize templates.\nRun `rake clean:all default` on you apps to remove stale files." + message
+        message = "A new version of RubyMotion is available! You have version #{product_version}.\nRun `sudo motion update` to upgrade to version #{latest_version}." + message
       end
       message.strip!
       unless message.empty?
