@@ -160,6 +160,8 @@ module Motion; class Command
           $stderr.puts "RubyMotion pre-release update installed in /Library/RubyMotionPre\n\n"
         else
           $stderr.puts "Software update installed.\n\n"
+          $stderr.puts "Run `motion repo` to synchronize templates."
+          $stderr.puts "Run `rake clean:all` on your apps to remove stale files.\n\n"
         end
         news = File.read("/Library/RubyMotion#{@prerelease_mode ? 'Pre' : ''}/NEWS")
         begin
