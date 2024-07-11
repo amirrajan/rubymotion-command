@@ -75,7 +75,7 @@ module Motion; class Command
     end
 
     def read_pulse_hashes
-      return [] unless File.exists?(read_pulses_file)
+      return [] unless File.exist?(read_pulses_file)
       File.read(read_pulses_file).each_line.to_a.map { |l| l.strip }
     end
 
@@ -85,7 +85,7 @@ module Motion; class Command
 
     def mark_pulses_as_read pulses
       path = File.expand_path(read_pulses_file)
-      `rm #{path}` if File.exists?(path)
+      `rm #{path}` if File.exist?(path)
       `touch #{read_pulses_file}`
       File.open(read_pulses_file, 'w') do |f|
         pulses.each do |p|
